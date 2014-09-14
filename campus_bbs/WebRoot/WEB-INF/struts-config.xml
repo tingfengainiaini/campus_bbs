@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+<!-- data-sources 现在不提倡在struts.config.xml中配置 -->
+
+<!-- 数据源配置： -->
+	<data-sources>
+		<data-source key="bbsDB" type="org.apache.commons.dbcp.BasicDataSource">
+			<set-property property="driverClassName" value="com.mysql.jdbc.Driver" />
+			<set-property property="url" value="jdbc:mysql://localhost:3306/BBS"/>
+			<set-property property="username" value="root" />
+			<set-property property="password" value="root" />
+		</data-source>
+	</data-sources>
+	
+	<form-beans>
+		<form-bean name="userLoginForm" type="bbs.user.form.UserLoginForm" />
+		<form-bean name="forumform" type="bbs.user.form.ForumForm" />
+		<form-bean name="newArticleForm" type="bbs.user.form.NewArticleForm"></form-bean>
+		<form-bean name="topicOfResponseForm" type="bbs.user.form.TopicOfResponseForm" />
+		<form-bean name="registrationForm" type="bbs.user.form.RegistrationForm" />
+
+		<form-bean name="adminLoginForm" type="bbs.admin.form.AdminLoginForm" />
+		<form-bean name="userManagerForm" type="bbs.admin.form.UserManagerForm" />
+		<form-bean name="forumManagerForm" type="bbs.admin.form.ForumManagerForm" />
+		<form-bean name="forumidForm" type="bbs.admin.form.ForumidForm" />
+		<form-bean name="topicManagerForm" type="bbs.admin.form.TopicManagerForm" />
+	</form-beans>
+	
+	<global-exceptions />
+	
+	<global-forwards>
+	<!-- 用户登录成功后跳转 --> 
+	<forward name="UserLoginSucceed" path="/user/bbsindex.jsp" />
+	<!-- 出错跳转 --> 
+	<forward name="ToErrorPage" path="/common/messagepage.jsp" />
+	<!-- 显示论坛主题列表  -->
+	 <forward name="ToTopicList" path="/user/topiclist.jsp" />
+	<!-- 身份验证成功之后发布新话题  --> 
+	<forward name="NewArticle" path="/user/newarticle.jsp" />
+	<!-- 回复话题跳转  -->
+	<forward name="ToResponseList" path="/user/responselist.jsp" />
+	<!-- 用户注销/注册 之后跳转： -->
+	<forward name="ToUserLogin" path="/user/userlogin.jsp" />
+
+    <!-- admin 登录之后的跳转  -->	 
+    <forward name="ToAdminIndex" path="/admin/adminindex.jsp" />
+		<forward name="ToUserManager" path="/admin/usermanager.jsp" />
+    <!-- 新增论坛之后跳回查看结果 -->
+    	<forward name="ToForumManager" path="/admin/forummanager.jsp" />
+    <!-- 编辑论坛2 --> 
+    <forward name="ToForumEdit" path="/admin/forumedit.jsp" />
+    <!-- 新增论坛2 -->
+     <forward name="ToForumCreate" path="/admin/forumcreate.jsp" />
+	<!-- 话题删除2之返回管理页面 -->	 
+	<forward name="ToTopicManager" path="/admin/topicmanager.jsp" />
+	<forward name="ToAdminLogin" path="/admin/adminlogin.jsp" />
+	<forward name="ToSystem" path="/common/system.jsp" />
+	
+	<forward name="ToUserTopic" path="/user/usertopic.jsp" />
+  
+  <!-- 用户详细信息 --> <forward name="ToUserInformation" path="/user/userinformation.jsp"/>
+  
+   <!-- 学习交流 --> <forward name="ToStudy" path="/user/study.jsp" />
+   <!-- 体育交流 --> <forward name="ToSport" path="/user/sport.jsp" />
+    <!-- 娱乐交流 --> <forward name="ToEntertainment" path="/user/entertainment.jsp" />
+	</global-forwards>
+	
+	<!-- 说明：action "input=":为表单验证失败时的转发路径 "path="为请求路径为："xxxx.do"  -->
+	
+	<action-mappings>
+	<!-- 用户登录 --> <action path="/userlogin" type="bbs.user.action.UserLoginAction" name="userLoginForm" scope="session" input="/login.jsp" />
+	<!-- 用户登录之后点击某个论坛显示的话题列表 --> <action path="/topiclist" type="bbs.user.action.TopicListAction" name="forumform" scope="request" input="/common/messagepage.jsp" />
+	
+	 <action path="/leveltopiclist" type="bbs.user.action.LevelTopicListAction" name="forumform" scope="request" input="/common/messagepage.jsp" />
+	
+	<!-- 发新话题 -->	<action path="/newtopic" type="bbs.user.action.NewTopicAction" input="/common/messagepage.jsp" />
+	<!-- 新话题创建之后跳转  --> <action path="/submitarticle" type="bbs.user.action.SubmitArticleAction" name="newArticleForm" validate="true" scope="request" input="/common/messagepage.jsp" />
+		<!-- 回复列表 --> <action path="/responselist" type="bbs.user.action.ResponseListAction" name="topicOfResponseForm" scope="request" input="/common/messagepage.jsp" />
+		<action path="/submitregistration" type="bbs.user.action.RegistrationAction" name="registrationForm" validate="true" scope="request" input="/common/messagepage.jsp" />
+		<action path="/registration" forward="/user/registration.jsp" />
+		<action path="/backtoindex" forward="/user/bbsindex.jsp" />
+		<action path="/logoff" type="bbs.user.action.LogoffAction" />
+		<action path="/userloginjsp" forward="/user/userlogin.jsp" />
+		
+		
+	<!-- 返回到学习版块-->	<action path="/backtostudy" forward="/user/study.jsp" />
+   <!-- 返回到体育版块-->	<action path="/backtosport" forward="/user/sport.jsp" />
+    <!-- 返回到娱乐版块-->	<action path="/backtoentertainment" forward="/user/entertainment.jsp" />
+		
+
+<!-- footer.jsp  里面的 NEO_W BBS --> <action path="/back" type="bbs.admin.action.BackAction" input="/common/messagepage.jsp" />
+<!--  footer.jsp 里面的 About -->	<action path="/system" type="bbs.admin.action.SystemAction" input="/common/message.jsp" />
+		
+<!-- 学习交流 --> <action path="/study" type="bbs.user.action.StudyAction" input="/common/messagepage.jsp" />
+<!-- 体育交流 --> <action path="/sport" type="bbs.user.action.SportAction" input="/common/messagepage.jsp" />
+<!-- 娱乐交流 --> <action path="/entertainment" type="bbs.user.action.EntertainmentAction" input="/common/messagepage.jsp" />
+		
+		
+		
+<!-- 用户详细信息查询 --> <action path="/userlist" type="bbs.user.action.UserListAction" name="userManagerForm" scope="request" input ="/common/messagepage.jsp"/>
+		
+		
+		
+		<action path="/adminlogin" type="bbs.admin.action.AdminLoginAction" name="adminLoginForm" scope="request" input="/common/messagepage.jsp" />
+		<action path="/usermanager" type="bbs.admin.action.UserManagerAction" input="/common/messagepage.jsp" />
+		<action path="/searchuser" type="bbs.admin.action.SearchUserAction" name="userManagerForm" scope="request" input="/common/messagepage.jsp" />
+		<action path="/edituser" type="bbs.admin.action.UserEditAction" name="userManagerForm" scope="request" input="/common/messagepage.jsp" />
+		<action path="/useredit" forward="/admin/useredit.jsp" />
+		<action path="/userdelete" type="bbs.admin.action.UserDeleteAction" name="userManagerForm" scope="request" input="/common/messagepage.jsp" />
+		<action path="/forummanager" type="bbs.admin.action.ForumManagerAction" input="/common/messagepage.jsp" />
+	<!-- 编辑论坛 1-->	<action path="/forumedit" type="bbs.admin.action.ForumEditAction" name="forumManagerForm" scope="request" input="/common/messagepage.jsp" />
+    <!-- 编辑论坛3 --> <action path="/forumeditsubmit" type="bbs.admin.action.ForumEditSubmitAction" name="forumManagerForm" scope="request" input="/common/messagepage.jsp" />
+		<action path="/forumdelete" type="bbs.admin.action.ForumDeleteAction" name="forumidForm" scope="request" input="/common/messagepage.jsp" />
+	<!-- 新增论坛1 --> <action path="/forumprecreate" type="bbs.admin.action.PrepareToCreateForumAction" input="/admin/forummanager.jsp" />
+	<!-- 新增论坛3 --> <action path="/forumcreate" type="bbs.admin.action.ForumCreateAction" name="forumManagerForm" scope="request" input="/admin/forummanager.jsp" />
+	<!-- 话题管理入口 --> <action path="/topicmanager" forward="/admin/topicmanager.jsp" />
+	
+	<!-- 话题加精处理 -->  <action path="/topicmanagelevel" type="bbs.admin.action.TopicManageAction" name="topicManagerForm" scope="request" input="/common/messagepage.jsp"/>
+	
+	<!-- 用户搜索话题查询 --><action path="/usertopicsearch" type="bbs.user.action.UserTopicSearchAction" name="topicManagerForm" scope="request" input="/common/messagepage.jsp" />
+	
+		<action path="/topicdelete" type="bbs.admin.action.TopicDeleteAction" name="topicManagerForm" scope="request" input="/common/messagepage.jsp" />
+	<!-- 话题查询 --> <action path="/topicsearch" type="bbs.admin.action.TopicSearchAction" name="topicManagerForm" scope="request" input="/common/messagepage.jsp" />
+		<!-- 注销登录 --> <action path="/adminlogoff" type="bbs.admin.action.AdminLogoffAction" />
+		<action path="/backtoadminindex" forward="/admin/adminindex.jsp" />
+		<action path="/adminloginjsp" forward="/admin/adminlogin.jsp" />
+
+	</action-mappings>
+	<!-- 国际化资源配置  -->
+	<message-resources parameter="bbsDAO.ApplicationResources_zh_CN" />
+</struts-config>
+
